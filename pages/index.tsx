@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Form,
   Select,
@@ -6,12 +7,12 @@ import {
   Switch,
   Slider,
   Button,
-} from 'antd'
+} from 'antd';
 
-import MainLayout from '../layouts/main'
+import MainLayout from '../layouts/main';
 
-const FormItem = Form.Item
-const Option = Select.Option
+const FormItem = Form.Item;
+const { Option } = Select;
 
 export default function Home() {
   return (
@@ -81,5 +82,5 @@ export default function Home() {
         </FormItem>
       </Form>
     </MainLayout>
-  )
+  );
 }

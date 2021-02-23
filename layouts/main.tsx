@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
@@ -29,27 +29,26 @@ const Main = ({ children }) => {
   });
   const [pathname, setPathname] = useState('/');
 
-  const menuHeaderRender = (logo: React.ReactNode, title: React.ReactNode) => {
-    return (
-      <Link href="/">
-        <a>
-          <img
-            src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
-            height="28px"
-          />
-          {title}
-        </a>
-      </Link>
-    );
+  const handleMenuClick = () => {
+    setPathname(options.path || '/');
   };
+
+  const menuHeaderRender = (logo: React.ReactNode, title: React.ReactNode) => (
+    <Link href="/">
+      <a>
+        <img
+          src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
+          height="28px"
+          alt="logo"
+        />
+        {title}
+      </a>
+    </Link>
+  );
 
   const menuItemRender = (options: MenuDataItem, element: React.ReactNode) => (
     <Link href={options.path}>
-      <a
-        onClick={() => {
-          setPathname(options.path || '/');
-        }}
-      >
+      <a onClick={handleMenuClick} aria-hidden="true">
         {element}
       </a>
     </Link>
