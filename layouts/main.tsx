@@ -29,7 +29,7 @@ const Main = ({ children }) => {
   });
   const [pathname, setPathname] = useState('/');
 
-  const handleMenuClick = () => {
+  const handleMenuClick = (options) => {
     setPathname(options.path || '/');
   };
 
@@ -48,7 +48,7 @@ const Main = ({ children }) => {
 
   const menuItemRender = (options: MenuDataItem, element: React.ReactNode) => (
     <Link href={options.path}>
-      <a onClick={handleMenuClick} aria-hidden="true">
+      <a onClick={(options) => handleMenuClick(options)} aria-hidden="true">
         {element}
       </a>
     </Link>
