@@ -1,70 +1,88 @@
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
-import {
-  SmileOutlined,
-  SettingOutlined,
-  PlaySquareOutlined,
-} from '@ant-design/icons'
+import ROUTES from '@config/router.config';
 
-import { Route, MenuDataItem } from '@ant-design/pro-layout/lib/typings'
-import { SiderMenuProps } from '@ant-design/pro-layout/lib/SiderMenu/SiderMenu'
+import type { ProSettings, MenuDataItem } from '@ant-design/pro-layout';
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
   ssr: false,
-})
+});
+const SettingDrawer = dynamic(
+  () => import('@ant-design/pro-layout/es/components/SettingDrawer'),
+  {
+    ssr: false,
+  }
+);
 
-const ROUTES: Route = {
-  path: '/',
-  routes: [
-    {
-      path: '/',
-      name: 'Welcome',
-      icon: <SmileOutlined />,
-      routes: [
-        {
-          path: '/welcome',
-          name: 'Account Settings',
-          icon: <SettingOutlined />,
-        },
-      ],
-    },
-    {
-      path: '/example',
-      name: 'Example Page',
-      icon: <PlaySquareOutlined />,
-    },
-  ],
-}
+const DefaultFooter = dynamic(
+  () => import('@ant-design/pro-layout/es/Footer'),
+  {
+    ssr: false,
+  }
+);
 
-const menuHeaderRender = (
-  logoDom: React.ReactNode,
-  titleDom: React.ReactNode,
-  props: SiderMenuProps
-) => (
-  <Link href="/">
-    <a>
-      {logoDom}
-      {!props?.collapsed && titleDom}
-    </a>
-  </Link>
-)
+const Main = ({ children }) => {
+  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
+    title: 'Sweetie Care',
+  });
+  const [pathname, setPathname] = useState('/');
 
-const menuItemRender = (options: MenuDataItem, element: React.ReactNode) => (
-  <Link href={options.path}>
-    <a>{element}</a>
-  </Link>
-)
+  const menuHeaderRender = (logo: React.ReactNode, title: React.ReactNode) => {
+    return (
+      <Link href="/">
+        <a>
+          <img
+            src="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
+            height="28px"
+          />
+          {title}
+        </a>
+      </Link>
+    );
+  };
 
-export default function Main({ children }) {
+  const menuItemRender = (options: MenuDataItem, element: React.ReactNode) => (
+    <Link href={options.path}>
+      <a
+        onClick={() => {
+          setPathname(options.path || '/');
+        }}
+      >
+        {element}
+      </a>
+    </Link>
+  );
+
+  const footerRender = () => (
+    <DefaultFooter
+      links={[]}
+      copyright={`${new Date().getFullYear()} Sweetie Care`}
+    />
+  );
   return (
-    <ProLayout
-      style={{ minHeight: '100vh' }}
-      route={ROUTES}
-      menuItemRender={menuItemRender}
-      menuHeaderRender={menuHeaderRender}
-    >
-      {children}
-    </ProLayout>
-  )
-}
+    <div id="dnt-pro-layout">
+      <ProLayout
+        title="Sweetie Care"
+        logo="https://gw.alipayobjects.com/mdn/rms_b5fcc5/afts/img/A*1NHAQYduQiQAAAAAAAAAAABkARQnAQ"
+        style={{ minHeight: '100vh' }}
+        route={ROUTES}
+        menuItemRender={menuItemRender}
+        menuHeaderRender={menuHeaderRender}
+        footerRender={footerRender}
+        {...settings}
+      >
+        {children}
+      </ProLayout>
+      <SettingDrawer
+        pathname={pathname}
+        getContainer={() => document.querySelector('#dnt-pro-layout')}
+        settings={settings}
+        onSettingChange={(changeSetting) => setSetting(changeSetting)}
+      />
+    </div>
+  );
+};
+
+export default Main;
